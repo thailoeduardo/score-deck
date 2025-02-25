@@ -18,7 +18,7 @@ jobs:
       - name: Enviar arquivos via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4
         with:
-          server: ftp.seu-servidor.com
+          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: ./
