@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PlayerRoom extends Model
 {
+    use HasFactory;
+
     //
     protected $table = 'player_room';
 
@@ -14,4 +17,10 @@ class PlayerRoom extends Model
 
     //
     const UPDATED_AT = null; // Remove updated_at
+
+    // Relacionamento com a tabela de usuários
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'player_id');
+    }
 }

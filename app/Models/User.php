@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function playerRoom()
+    {
+        return $this->hasMany(PlayerRoom::class);
+    }
 }
