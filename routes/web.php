@@ -3,16 +3,39 @@
 use App\Models\MatchePlayer;
 use App\Models\PlayerRoom;
 use App\Models\Room;
+use App\Models\RoomPoints;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 Route::view('/', 'welcome');
 
-// listar a ultiam sala ativa
+// listar a ultima sala
 Route::get('/rooms', function () {
-    $room = Room::orderBy('id', 'desc')->first();
+    // trazer Todas as salas abertas
+    $rooms = Room::where('is_closed', false)->get();
+    // $room = Room::orderBy('id', 'desc')->first();
 
-    return view('rooms', ['room' => $room]);
+    return view('rooms', ['rooms' => $rooms]);
 })->middleware(['auth', 'verified'])->name('match');
+
+/**
+ * Registrar uma nova sala
+ */
+Route::post('/rooms', function () {
+    // Validar os dados do formulário
+    // request()->validate([
+    //     'name' => 'required|string|max:255',
+    // ]);
+
+    // Criar uma nova sala
+    $room = new Room();
+    $room->is_closed = false;
+    $room->save();
+
+    return redirect('/room/' . $room->id);
+})->middleware(['auth', 'verified'])->name('rooms');
 
 /**
  * Exibir dados da Sala selecionada
@@ -32,41 +55,167 @@ Route::get('/room/{id}', function ($id) {
     // Encontrar a sala pelo ID usando Eloquent
     $room = Room::findOrFail($id);
 
-    // Carregar os usuários da sala usando Eager Loading
-    // $users = PlayerRoom::where('room_id', $id)
-    //     ->with('user')
-    //     ->get()->pluck('user.name'); // Obter apenas os nomes dos usuários
-
      // Carregar os usuários da sala, garantindo que existam usuários associados
-     $users = PlayerRoom::where('room_id', $id)
+     $usersRoom = PlayerRoom::where('room_id', $id)
         ->with('user')
         ->get()
         ->pluck('user');
-        // ->filter(fn($playerRoom) => $playerRoom->user) // Remove registros sem usuário
-        // ->map(fn($playerRoom) => $playerRoom->user); // Retorna o objeto completo do usuário
 
+    $users = User::All();
+
+    // trazer os dados do usuario jubnto com os pontos da tabela room_points
+    $points = RoomPoints::where('room_id', $id)
+        ->with('user')
+        ->get();
+
+
+    // Agrupar os pontos por usuário e calcular a soma total de cada jogador
+    $totalPoints = RoomPoints::where('room_id', $id)
+        ->with('user')
+        ->selectRaw('player_id, SUM(points) as total_points')
+        ->groupBy('player_id')
+        ->get()
+        ->keyBy('player_id'); // Usa o user_id como chave para fácil acesso
+
+    // validar se na sala algum jogador ja tem a pontuiuacao igual ou aciam de 100
+
+    $playerWith100Points = RoomPoints::where('room_id', $id)
+        ->selectRaw('player_id, SUM(points) as total_points')
+        ->groupBy('player_id')
+        ->havingRaw('SUM(points) >= 100')
+        ->exists();
+
+    // dd($playerWith100Points);
+
+    // ATUALIZAR O STATUS DA SALA
+    if ($playerWith100Points) {
+        $room->is_closed = true;
+        $room->closed_at = now();
+        $room->save();
+    }
 
     return view('room', [
-        'room'  => $room,
-        'users' => $users,
+        'room'      => $room,
+        'usersRoom' => $usersRoom,
+        'users'     => $users,
+        'points'    => $points,
+        'totalPoints'    => $totalPoints,
     ]);
-})->middleware(['auth', 'verified'])->name('match');
+})->middleware(['auth', 'verified'])->name('room');
 
-// Route::view('/registrar-partida', 'match')->middleware(['auth', 'verified'])->name('match');
+/**
+ * Adicionar um jogador a uma sala
+ */
+Route::post('/room/{id}', function ($id, Request $request) {
+    // Validação
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+    ], [
+        'user_id.required' => 'Selecione um jogador!',
+        'user_id.exists' => 'Jogador não encontrado!',
+    ]);
 
-Route::get('/registrar-partida', function () {
+    // Pegar o ID do usuário
+    $user_id = $request->input('user_id');
 
-    return view('match', ['users' => \App\Models\User::all()]);
-})->middleware(['auth', 'verified'])->name('match');
+    // Verificar se o jogador já está na sala
+    $playerExists = PlayerRoom::where('room_id', $id)
+                              ->where('player_id', $user_id)
+                              ->exists();
 
-Route::post('/registrar-partida', function () {
+    if ($playerExists) {
+        return redirect()->back()->withErrors(['user_id' => 'Jogador já está na sala!']);
+    }
 
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('match');
+    // Encontrar a sala pelo ID
+    $room = Room::findOrFail($id);
 
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
+    // Adicionar o jogador à sala
+    PlayerRoom::create([
+        'player_id' => $user_id,
+        'room_id' => $id,
+        'created_at' => now(),
+    ]);
+
+    return redirect()->back()->with('success', 'Jogador adicionado com sucesso!');
+
+    // // Encontrar a sala pelo ID usando Eloquent
+    // $room = Room::findOrFail($id);
+    // // pegar o id do usuario
+    // $user_id = request('user_id');
+
+    // // validar se usuario existe
+    // $user = User::find($user_id);
+    // if (!$user) {
+    //     return redirect()->back()->with('error', 'Jogador não encontrado!');
+    // }
+
+    // // valdiae se camo esta ppreenchido
+    // if (!$user_id) {
+    //     return redirect()->back()->with('error', 'Selecione um jogador!');
+    // }
+
+    // // validar se usuario ja esta na sala
+    // $player = PlayerRoom::where('room_id', $id)->where('player_id', $user_id)->first();
+
+    // if ($player) {
+    //     return redirect()->back()->with('error', 'Jogador já está na sala!');
+    // }
+
+
+    // // dd($id, $user_id);
+
+    // // adiciona na sala
+    // $player = new PlayerRoom();
+    // //converter string par inteiro
+    // $player->player_id = $user_id;
+    // $player->room_id = $id;
+    // $player->created_at = now();
+    // $player->save();
+    // // return redirect('/room/' . $room->id);
+    // return redirect()->back()->with('success', 'Jogador adicionado com sucesso!');
+})->middleware(['auth', 'verified'])->name('room');
+
+/**
+ * Adicionar ponto ao jogador
+ */
+Route::post('/room/{id}/point', function ($id, Request $request) {
+    // Validação
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'points' => 'required|integer|min:0',
+    ], [
+        'user_id.required' => 'Selecione um jogador!',
+        'user_id.exists' => 'Jogador não encontrado!',
+    ]);
+
+    // Pegar o ID do usuário
+    $user_id = $request->input('user_id');
+
+    // Pegar o pontos do jogador
+    $points = $request->input('points');
+
+    // Encontrar a sala pelo ID
+    $room = Room::findOrFail($id);
+
+    // Encontrar o jogador na sala
+    $player = PlayerRoom::where('room_id', $id)
+                        ->where('player_id', $user_id)
+                        ->first();
+
+    if (!$player) {
+        return redirect()->back()->with('error', 'Jogador não encontrado na sala!');
+    }
+
+     $roomPoints = new RoomPoints();
+     $roomPoints->room_id = $id;
+     $roomPoints->player_id = $user_id;
+     $roomPoints->points = $points;
+     $roomPoints->save();
+
+    return redirect()->back()->with('success', 'Ponto adicionado com sucesso!');
+})->middleware(['auth', 'verified'])->name('room');
+
 
 Route::get('dashboard', function () {
     $rooms = "";                                                    //Room::all(); // Busca todos as salas
