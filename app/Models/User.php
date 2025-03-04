@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PlayerRoom::class);
     }
+
+    public function RoomPoints()
+    {
+        return $this->hasMany(RoomPoints::class);
+    }
 }
