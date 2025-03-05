@@ -2,13 +2,11 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Sala') }} {{$room->id}} -
-            {{-- exibir se sala esta aberta ou fechada --}}
             @if ($room->is_closed)
                 fechada
             @else
                 Aberta
             @endif
-                {{-- {{ $room->is_closed }} --}}
         </h2>
     </x-slot>
 
@@ -58,10 +56,7 @@
                                 @enderror
                             </div>
 
-                            <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">
-                                Adicionar Jogador
-                            </button>
+                            <x-primary-button>{{ __('Adicionar Jogador') }}</x-primary-button>
                         </form>
                     @endif
                 </div>
@@ -161,10 +156,7 @@
                             @enderror
                         </div>
 
-                        <button type="submit"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">
-                            Adicionar Jogador
-                        </button>
+                        <x-primary-button>{{ __('Adicionar Jogador') }}</x-primary-button>
                     </form>
                 </div>
             </div>

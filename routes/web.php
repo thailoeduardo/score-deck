@@ -1,35 +1,29 @@
 <?php
 
-use App\Models\MatchePlayer;
 use App\Models\PlayerRoom;
 use App\Models\Room;
 use App\Models\RoomPoints;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 Route::view('/', 'welcome');
 
-// listar a ultima sala
+/**
+ * listar a ultima sala
+ *
+ */
 Route::get('/rooms', function () {
-    // trazer Todas as salas abertas
     $rooms = Room::where('is_closed', false)->get();
-    // $room = Room::orderBy('id', 'desc')->first();
 
     return view('rooms', ['rooms' => $rooms]);
 })->middleware(['auth', 'verified'])->name('match');
 
 /**
  * Registrar uma nova sala
+ *
  */
 Route::post('/rooms', function () {
-    // Validar os dados do formulário
-    // request()->validate([
-    //     'name' => 'required|string|max:255',
-    // ]);
-
-    // Criar uma nova sala
     $room = new Room();
     $room->is_closed = false;
     $room->save();
@@ -52,18 +46,15 @@ Route::post('/rooms', function () {
  *
  */
 Route::get('/room/{id}', function ($id) {
-    // Encontrar a sala pelo ID usando Eloquent
     $room = Room::findOrFail($id);
 
-     // Carregar os usuários da sala, garantindo que existam usuários associados
-     $usersRoom = PlayerRoom::where('room_id', $id)
+    $usersRoom = PlayerRoom::where('room_id', $id)
         ->with('user')
         ->get()
         ->pluck('user');
 
     $users = User::All();
 
-    // trazer os dados do usuario jubnto com os pontos da tabela room_points
     $points = RoomPoints::where('room_id', $id)
         ->with('user')
         ->get();
@@ -180,7 +171,6 @@ Route::post('/room/{id}', function ($id, Request $request) {
  * Adicionar ponto ao jogador
  */
 Route::post('/room/{id}/point', function ($id, Request $request) {
-    // Validação
     $request->validate([
         'user_id' => 'required|exists:users,id',
         'points' => 'required|integer|min:0',
@@ -218,14 +208,24 @@ Route::post('/room/{id}/point', function ($id, Request $request) {
 
 
 Route::get('dashboard', function () {
-    $rooms = "";                                                    //Room::all(); // Busca todos as salas
-                                                                    // # TODO: Buscar as ultimas cinco jogadaS
-    $matches = MatchePlayer::orderBy('id', 'desc')->take(5)->get(); // Busca as ultimas cinco jogadas
-                                                                    // Matche::orderBy('id', 'desc')->take(5)->get();//
+    $room = null; // Inicializa a variável para evitar erros
 
-    // $matches = MatchePlayer::all(); // Busca todos as jogadas
+    // Buscar o último ponto registrado
+    $lastPoint = RoomPoints::orderBy('id', 'desc')->first();
 
-    return view('dashboard', ['rooms' => $rooms, 'matches' => $matches]);
+    // Se existir um ponto, buscar a sala correspondente
+    if ($lastPoint) {
+        $room = Room::where('id', $lastPoint->room_id)->first();
+
+        // Se a sala estiver fechada, buscar a última sala aberta
+        if ($room && $room->is_closed) {
+            $room = Room::where('is_closed', false)
+                        ->orderBy('id', 'desc')
+                        ->first();
+        }
+    }
+
+    return view('dashboard', ['room' => $room]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::view('profile', 'profile')

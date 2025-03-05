@@ -93,7 +93,7 @@ new class extends Component
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('rooms')" :active="request()->routeIs('rooms')" wire:navigate>
-                {{ __('Jogar') }}
+                {{ __('Salas Disponiveis') }}
             </x-responsive-nav-link>
         </div>
 
