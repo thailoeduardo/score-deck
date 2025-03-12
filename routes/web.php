@@ -208,24 +208,49 @@ Route::post('/room/{id}/point', function ($id, Request $request) {
 
 
 Route::get('dashboard', function () {
-    $room = null; // Inicializa a variável para evitar erros
+    // $room = null; // Inicializa a variável para evitar erros
 
-    // Buscar o último ponto registrado
-    $lastPoint = RoomPoints::orderBy('id', 'desc')->first();
+    // // Buscar o último ponto registrado
+    // $lastPoint = RoomPoints::orderBy('id', 'desc')->first();
 
-    // Se existir um ponto, buscar a sala correspondente
-    if ($lastPoint) {
-        $room = Room::where('id', $lastPoint->room_id)->first();
+    // // Se existir um ponto, buscar a sala correspondente
+    // if ($lastPoint) {
+    //     $room = Room::where('id', $lastPoint->room_id)->first();
 
-        // Se a sala estiver fechada, buscar a última sala aberta
-        if ($room && $room->is_closed) {
-            $room = Room::where('is_closed', false)
-                        ->orderBy('id', 'desc')
-                        ->first();
-        }
+    //     // Se a sala estiver fechada, buscar a última sala aberta
+    //     if ($room && $room->is_closed) {
+    //         $room = Room::where('is_closed', false)
+    //                     ->orderBy('id', 'desc')
+    //                     ->first();
+    //     }
+    // }
+
+    $rooms = Room::orderBy('id', 'desc')->get();
+    $totalPoints = [];
+
+    foreach ($rooms as $room) {
+        // $totalPoints[]['room_id'] = $room->id;
+
+        // $totalPoints[] = RoomPoints::where('room_id', $room->id)
+        // ->with('user')
+        // ->selectRaw('player_id, SUM(points) as total_points')
+        // ->groupBy('player_id')
+        // ->get()
+        // ->keyBy('player_id');
+
+        $totalPoints[$room->id] = [
+            'room_id' => $room->id,
+            'points' => RoomPoints::where('room_id', $room->id)
+                ->with('user')
+                ->selectRaw('player_id, SUM(points) as total_points')
+                ->groupBy('player_id')
+                ->get()
+                ->keyBy('player_id'),
+        ];
+
     }
 
-    return view('dashboard', ['room' => $room]);
+    return view('dashboard', ['totalPoints' => $totalPoints]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::view('profile', 'profile')
