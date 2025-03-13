@@ -12,7 +12,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xs sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <ul class="w-full space-y-2">
                         @forelse ($usersRoom as $user)
@@ -42,7 +42,7 @@
                                     Selecione um usuário
                                 </label>
                                 <select name="user_id" id="user_id"
-                                    class="form-select rounded-md shadow-sm mt-1 block w-full text-gray-700 @error('user_id') border-red-500 @enderror">
+                                    class="form-select rounded-md shadow-xs mt-1 block w-full text-gray-700 @error('user_id') border-red-500 @enderror">
                                     <option value="">Selecione um usuário</option>
                                     @foreach($users as $user)
                                         <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
@@ -68,7 +68,7 @@
 @if (!$points->isEmpty())
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xs sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <ul class="w-full space-y-2">
                         @forelse ($points as $point)
@@ -96,7 +96,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xs sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <ul class="w-full space-y-2">
                         @forelse ($totalPoints as $point)
@@ -123,7 +123,7 @@
     @if ((!$usersRoom->isEmpty() || $usersRoom->count() >= 2) && !$room->is_closed)
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xs sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form action="/room/{{$room->id}}/point" method="post" class="mt-4">
                         @csrf
@@ -132,7 +132,7 @@
                                 Selecione um usuário
                             </label>
                             <select name="user_id" id="user_id"
-                                class="form-select rounded-md shadow-sm mt-1 block w-full text-gray-700 @error('user_id') border-red-500 @enderror">
+                                class="form-select rounded-md shadow-xs mt-1 block w-full text-gray-700 @error('user_id') border-red-500 @enderror">
                                 <option value="">Selecione um usuário</option>
                                 @foreach($usersRoom as $user)
                                     <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
