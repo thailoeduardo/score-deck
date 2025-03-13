@@ -24,10 +24,15 @@ jobs:
           LAST_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
           VERSION=${LAST_VERSION#v}
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-
+      
+          # Initialize MAJOR, MINOR, PATCH if they are empty
+          : ${MAJOR:=0}
+          : ${MINOR:=0}
+          : ${PATCH:=0}
+      
           # Obtém a mensagem do último commit
           LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
-
+      
           # Decide qual versão incrementar com base na mensagem do commit
           if [[ "$LAST_COMMIT_MSG" == *"BREAKING CHANGE"* ]]; then
             ((MAJOR++))
