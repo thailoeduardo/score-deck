@@ -2,4 +2,37 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo 'Rodando post-commit!'
+
+#!/bin/bash
+
+# Obtém a última tag ou usa "v1.0.0" como padrão
+LAST_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+VERSION=${LAST_VERSION#v}
+
+# Extrai números da versão
+IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+# Obtém a mensagem do commit mais recente
+LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
+
+# Decide qual versão incrementar com base na mensagem do commit
+if [[ "$LAST_COMMIT_MSG" == *"BREAKING CHANGE"* ]]; then
+  ((MAJOR++))
+  MINOR=0
+  PATCH=0
+elif [[ "$LAST_COMMIT_MSG" == feat:* ]]; then
+  ((MINOR++))
+  PATCH=0
+else
+  ((PATCH++))
+fi
+
+# Gera a nova versão
+NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+echo "Criando nova versão: $NEW_VERSION"
+
+# Cria e envia a nova tag
+git tag -a "$NEW_VERSION" -m "Versão $NEW_VERSION"
+git push origin "$NEW_VERSION"
+
 echo "🚀 Hook post-commit rodou com sucesso!" >> /tmp/husky-debug.log
