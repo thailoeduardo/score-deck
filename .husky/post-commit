@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo 'Rodando post-commit!'
+echo "🚀 Hook post-commit rodou com sucesso!" >> /tmp/husky-debug.log
