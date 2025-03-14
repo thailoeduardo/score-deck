@@ -61,7 +61,7 @@
                   </div>
             </div>
             <div class="list-col-grow">
-                {{-- <div>Dio Lupa</div> --}}
+                <div>Dio Lupa</div>
                 <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
             </div>
             <button class="btn btn-square btn-ghost">
