@@ -4,13 +4,23 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      increment_type:
+        description: 'Tipo de incremento (MAJOR, MINOR, PATCH)'
+        required: true
+        default: 'PATCH'
+        type: choice
+        options:
+          - MAJOR
+          - MINOR
+          - PATCH
 
 jobs:
   versioning:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout do código
+      - name: Checkout do repositório
         uses: actions/checkout@v3
 
       - name: Configurar Git
@@ -23,38 +33,34 @@ jobs:
         run: |
           LAST_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
           VERSION=${LAST_VERSION#v}
-          
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-          
-          # Se as variáveis estiverem vazias, inicializa com valores padrão
-          MAJOR=${MAJOR:-0}
-          MINOR=${MINOR:-0}
-          PATCH=${PATCH:-0}
-          
-          # Depuração
-          echo "LAST_VERSION=$LAST_VERSION"
-          echo "VERSION=$VERSION"
-          echo "MAJOR=$MAJOR, MINOR=$MINOR, PATCH=$PATCH"
-          
-          # Obtém a mensagem do último commit
-          LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "LAST_COMMIT_MSG=$LAST_COMMIT_MSG"
-          
-          # Decide qual versão incrementar com base na mensagem do commit
-          if echo "$LAST_COMMIT_MSG" | grep -q "BREAKING CHANGE"; then
-            ((MAJOR++))
-            MINOR=0
-            PATCH=0
-          elif echo "$LAST_COMMIT_MSG" | grep -q "^feat:"; then
-            ((MINOR++))
-            PATCH=0
-          else
-            ((PATCH++))
-          fi
-          
-          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "Versão atual: $MAJOR.$MINOR.$PATCH"
 
+          # Usar o input do workflow para definir o tipo de incremento
+          INCREMENT_TYPE="${{ github.event.inputs.increment_type }}"
+
+          case $INCREMENT_TYPE in
+            MAJOR)
+              ((MAJOR++))
+              MINOR=0
+              PATCH=0
+              ;;
+            MINOR)
+              ((MINOR++))
+              PATCH=0
+              ;;
+            PATCH)
+              ((PATCH++))
+              ;;
+            *)
+              echo "Tipo de incremento inválido. Use MAJOR, MINOR ou PATCH."
+              exit 1
+              ;;
+          esac
+
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          echo "Nova versão: $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Criar e publicar nova tag
         run: |
