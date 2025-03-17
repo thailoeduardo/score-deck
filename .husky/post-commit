@@ -33,6 +33,6 @@ echo "Criando nova versão: $NEW_VERSION"
 
 # Cria e envia a nova tag
 git tag -a "$NEW_VERSION" -m "Versão $NEW_VERSION"
-git push origin "$NEW_VERSION"
+# git push origin "$NEW_VERSION"
 
 echo "🚀 Hook post-commit rodou com sucesso!" >> /tmp/husky-debug.log
