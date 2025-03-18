@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="viewport" content="viewport-fit=cover">
 
         <title>@yield('title') {{ config('app.name', 'Laravel') }}</title>
 
@@ -16,11 +17,11 @@
     </head>
     <body class="">
         <div class="">
-            <div>
+            {{-- <div>
                 <a href="/" wire:navigate>
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
                 </a>
-            </div>
+            </div> --}}
 
             <div class="">
                 {{ $slot }}
