@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Models\PlayerRoom;
 use App\Models\Room;
 use App\Models\RoomPoints;
@@ -7,7 +8,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-Route::view('/', 'welcome');
+Route::get('/', [HomeController::class, 'show'])
+    ->middleware('guest')
+    ->name('home');
 
 /**
  * listar a ultima sala
