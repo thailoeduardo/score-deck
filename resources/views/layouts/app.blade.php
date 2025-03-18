@@ -18,7 +18,16 @@
     <body class="">
         <livewire:layout.navigation />
 
-        <main class="py-40">
+        <!-- Page Heading -->
+        @if (isset($header))
+            <header class="pt-30">
+                <div class="max-w-4xl min-w-[18rem] overflow-x-hidden mx-auto mb-8 text-neutral ">
+                    {{ $header }}
+                </div>
+            </header>
+        @endif
+
+        <main class="pb-40">
             {{ $slot }}
         </main>
 
