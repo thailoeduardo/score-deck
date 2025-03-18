@@ -260,4 +260,9 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+
+Route::get('players', function () {
+    return view('players');
+})->middleware(['auth', 'verified'])->name('players');
+
 require __DIR__.'/auth.php';
