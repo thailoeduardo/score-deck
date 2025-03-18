@@ -15,6 +15,5 @@
         <!-- Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased font-sans">
-   </body>
+    <body class="antialiased font-sans"></body>
 </html>
