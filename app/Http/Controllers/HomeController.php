@@ -7,11 +7,15 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    //
+    /**
+     * Redirect user to login page and dashboard
+     *
+     * @return void
+     */
     public function show()
     {
         return Auth::check()
-            ? redirect('/dashboard') // Se estiver autenticado, redireciona para o painel
-            : redirect()->route('login'); // Se não, redireciona para o login
+            ? redirect('/dashboard') // If authenticated, redirect to the dashboard
+            : redirect()->route('login'); // If not, redirect to login
     }
 }
