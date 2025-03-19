@@ -16,7 +16,7 @@ new class extends Component
     }
 }; ?>
 
-<nav class="navbar fixed bg-base-100 shadow-sm">
+<nav class="navbar fixed bg-base-300 shadow-sm z-10">
     <div class="navbar-start">
         <div class="dropdown">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle">

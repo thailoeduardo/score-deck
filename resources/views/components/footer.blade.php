@@ -1,4 +1,4 @@
-<footer class="dock bg-neutral text-neutral-content">
+<footer class="dock bg-base-300 z-10 text-neutral-content">
     <x-footer-nav-link href="{{ route('rooms') }}" :active="request()->routeIs('rooms')">
         <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><polyline points="3 14 9 14 9 17 15 17 15 14 21 14" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></polyline><rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" stroke-width="2"></rect></g></svg>
         <span class="dock-label">Jogar</span>
