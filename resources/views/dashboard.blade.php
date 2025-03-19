@@ -1,11 +1,17 @@
 @section('title', 'Dashboard')
 
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="text-center text-xl text-gray-200 leading-tight">
+            {{ __('Pontos') }}
+        </h2>
+    </x-slot>
+
     @foreach ($totalPoints as $room)
         <div class="flex min-h-[6rem] max-w-4xl min-w-[18rem] flex-wrap items-center justify-center gap-2 overflow-x-hidden mx-auto mb-8">
             <div class="w-full max-w-lg">
                 <ul class="list bg-base-100 rounded-box shadow-md">
-                    <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Pontuacão Sala {{ $room['room_id'] }}</li>
+                    <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Pontuacão Sala {{ $room['room_id'] }} - <a href="room/{{ $room['room_id'] }}">Acessar sala</a></li>
 
                     @foreach ($room['points'] as $player)
                         <li class="list-row items-center">
