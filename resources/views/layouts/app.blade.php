@@ -27,7 +27,7 @@
             </header>
         @endif
 
-        <main class="pb-40">
+        <main class="pb-40 px-4">
             {{ $slot }}
         </main>
 
