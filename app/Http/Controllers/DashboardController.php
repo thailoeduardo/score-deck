@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    // show rooms
+    // Show rooms
     public function index()
     {
-        $rooms = Room::orderBy('created_at', 'desc')->get();
+        $rooms = Room::orderBy('created_at', 'desc')
+            ->where('is_closed', true)
+            ->get();
+
         $totalPoints = [];
 
         foreach ($rooms as $room) {
@@ -24,7 +27,6 @@ class DashboardController extends Controller
                     ->get()
                     ->keyBy('player_id'),
             ];
-
         }
 
         return view('dashboard', ['totalPoints' => $totalPoints]);

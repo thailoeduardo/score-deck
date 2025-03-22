@@ -3,7 +3,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-center text-xl text-gray-200 leading-tight">
-            {{ __('Pontos') }}
+            {{ __('Historico de partidas') }}
         </h2>
     </x-slot>
 
