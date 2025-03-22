@@ -1,9 +1,9 @@
-<h3 align="center">Project Title</h3>
+<h3 align="center">Score Deck</h3>
 
 <div align="center">
 
-  [![Demo](https://img.shields.io/badge/-live%20project-brightgreen?style=for-the-badge)](https://)
-  [![Report Bug](https://img.shields.io/badge/-Report%20Bug-critical?style=for-the-badge)](https://)
+  [![Demo](https://img.shields.io/badge/-live%20project-brightgreen?style=for-the-badge)](https://game.kriathus.com.br/)
+  [![Report Bug](https://img.shields.io/badge/-Report%20Bug-critical?style=for-the-badge)](https://github.com/thailoeduardo/score-deck/issues)
 
   [![GitHub license](https://img.shields.io/github/license/thailoeduardo/template-for-projects?style=for-the-badge)](https://github.com/thailoeduardo/template-for-projects/blob/master/LICENSE)
   [![GitHub stars](https://img.shields.io/github/stars/thailoeduardo/template-for-projects?style=for-the-badge)](https://github.com/thailoeduardo/template-for-projects/stargazers)
@@ -16,7 +16,7 @@
 
 <div align="center">
 
-  ![thumbnail project](https://via.placeholder.com/700x450.png?text=Image+project)]
+  ![thumbnail project](thumbnail.jpeg)]
   
 </div>
 
