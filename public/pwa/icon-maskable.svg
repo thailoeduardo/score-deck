@@ -1,0 +1,14 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="sd-mask" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+<stop stop-color="#00C1FF"/>
+<stop offset="1" stop-color="#8B5CF6"/>
+</linearGradient>
+</defs>
+<rect width="48" height="48" fill="url(#sd-mask)"/>
+<rect x="10" y="10" width="28" height="28" rx="8.5" fill="#FFFFFF"/>
+<rect x="10" y="23.5" width="28" height="1.8" rx="0.9" fill="#C8CDD9"/>
+<circle cx="17.5" cy="16.8" r="2.6" fill="#00C1FF"/>
+<circle cx="30.5" cy="16.8" r="2.6" fill="#00C1FF"/>
+<circle cx="24" cy="29.5" r="2.6" fill="#8B5CF6"/>
+</svg>

@@ -1,6 +1,0 @@
-@import 'tailwindcss';
-@plugin 'daisyui' {
-    themes: 'dracula';
-}
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
