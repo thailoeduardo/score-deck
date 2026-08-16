@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { useAuthStore } from "@/store/authStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteRoom } from "@/lib/api";
+import { deleteRoom, getErrorMessage } from "@/lib/api";
 import { toast } from "sonner";
 
 interface RoomCardProps {
@@ -40,8 +40,8 @@ export function RoomCard({ room }: RoomCardProps) {
       toast.success("Sala apagada com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["rooms"] });
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Erro ao apagar sala.");
+    onError: (error) => {
+      toast.error(getErrorMessage(error, "Erro ao apagar sala."));
     },
   });
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, Play, Share2, UserCheck } from "lucide-react";
 import { toast } from "sonner";
-import { createRoom } from "@/lib/api";
+import { createRoom, getErrorMessage } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 
@@ -22,9 +22,9 @@ export function CreateRoomPage() {
       });
       toast.success("Sala criada! Você já está na partida.");
       navigate(`/rooms/${room.id}`);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Ocorreu um erro ao criar a sala.");
-      console.error(err);
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Ocorreu um erro ao criar a sala."));
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
