@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, UserPlus, Plus, RotateCcw } from "lucide-react";
-import { getRoomById, joinRoom, addRound, rematchRoom } from "@/lib/api";
+import { getErrorMessage, getErrorStatus, getRoomById, joinRoom, addRound, rematchRoom } from "@/lib/api";
 import type { Player } from "@/types/domino";
 import { PointsKeypadModal } from "@/components/room/PointsKeypadModal";
 import { useRoomRealtime } from "@/hooks/useRoomRealtime";
@@ -30,8 +30,8 @@ export function RoomPage() {
       toast.success("Nova partida criada com os mesmos jogadores!");
       navigate(`/rooms/${newRoom.id}`);
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Erro ao criar nova partida.");
+    onError: (error) => {
+      toast.error(getErrorMessage(error, "Erro ao criar nova partida."));
     },
   });
 
@@ -63,8 +63,8 @@ export function RoomPage() {
       toast.success(updatedRoom.status === "finished" ? "Partida encerrada! 🏆" : "Pontos registrados!");
       setScoringPlayer(null);
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Erro ao registrar pontos.");
+    onError: (error) => {
+      toast.error(getErrorMessage(error, "Erro ao registrar pontos."));
     },
   });
 
@@ -77,7 +77,7 @@ export function RoomPage() {
   }
 
   if (error) {
-    const isForbidden = (error as any)?.response?.status === 403;
+    const isForbidden = getErrorStatus(error) === 403;
     if (isForbidden) {
       return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6 text-center">

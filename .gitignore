@@ -108,7 +108,7 @@ dist/
 dist/
 
 # Microbundle
-lib/
+/lib/
 dist/
 
 # Jekyll

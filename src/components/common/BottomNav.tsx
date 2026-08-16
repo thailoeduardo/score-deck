@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Gamepad2, Users, User, Share2 } from "lucide-react";
+import { Home, Gamepad2, Users, User, Share2, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
 export function BottomNav() {
@@ -18,7 +18,7 @@ export function BottomNav() {
   // The center share button only appears on the room screen
   const isRoomPage = /^\/rooms\/[a-zA-Z0-9_-]+$/.test(location.pathname);
 
-  const renderNavItem = (item: any) => {
+  const renderNavItem = (item: { label: string; path: string; icon: LucideIcon }) => {
     const isActive = location.pathname === item.path;
     const Icon = item.icon;
 

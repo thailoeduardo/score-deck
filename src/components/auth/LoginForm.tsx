@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routesConfig } from "@/config/routes.config";
 import { loginSchema, type LoginSchema } from "@/schemas/login.schema";
-import { login } from "@/lib/api";
+import { getErrorMessage, login } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 
 type LoginFormProps = {
@@ -37,8 +37,8 @@ export function LoginForm({ className }: LoginFormProps) {
       setAuth(data.token, data.user);
       toast.success("Login realizado com sucesso!");
       navigate(routesConfig.app.home);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao fazer login. Verifique suas credenciais.");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Erro ao fazer login. Verifique suas credenciais."));
     }
   };
 

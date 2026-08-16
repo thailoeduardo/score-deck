@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routesConfig } from "@/config/routes.config";
 import { registerSchema, type RegisterSchema } from "@/schemas/register.schema";
-import { register as apiRegister } from "@/lib/api";
+import { getErrorMessage, register as apiRegister } from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 
 type RegisterFormProps = {
@@ -38,8 +38,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
       setAuth(data.token, data.user);
       toast.success("Conta criada com sucesso!");
       navigate(routesConfig.app.home);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao criar conta. Tente novamente.");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Erro ao criar conta. Tente novamente."));
     }
   };
 
