@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 export function HomePage() {
   const { data: rooms = [], isLoading, error } = useQuery({
     queryKey: ["rooms"],
-    queryFn: listRooms,
+    queryFn: () => listRooms(),
   });
 
   if (isLoading) {

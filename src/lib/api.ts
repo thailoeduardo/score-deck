@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import { api } from "./axios";
-import type { Room, CreateRoomInput, AddRoundInput } from "@/types/domino";
+import type { Room, RoomCategory, RoomCategoryId, CreateRoomInput, AddRoundInput } from "@/types/domino";
 import type { LoginPayload, LoginResponse, RegisterPayload } from "@/types/auth";
 
 type ApiErrorResponse = {
@@ -31,8 +31,18 @@ export const register = async (payload: RegisterPayload): Promise<LoginResponse>
 };
 
 // Rooms
-export const listRooms = async (): Promise<Room[]> => {
-  const { data } = await api.get<Room[]>("/rooms");
+export const listRooms = async (category?: RoomCategoryId): Promise<Room[]> => {
+  const { data } = await api.get<Room[]>("/rooms", { params: category ? { category } : undefined });
+  return data;
+};
+
+export const listRoomCategories = async (): Promise<RoomCategory[]> => {
+  const { data } = await api.get<RoomCategory[]>("/rooms/categories");
+  return data;
+};
+
+export const createRoomCategory = async (name: string): Promise<RoomCategory> => {
+  const { data } = await api.post<RoomCategory>("/rooms/categories", { name });
   return data;
 };
 

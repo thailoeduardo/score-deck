@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/common/ThemeToggle";
 export function PlayersPage() {
   const { data: rooms, isLoading, error } = useQuery({
     queryKey: ["rooms"],
-    queryFn: listRooms,
+    queryFn: () => listRooms(),
   });
 
   const getPlayersStats = () => {
