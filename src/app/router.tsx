@@ -1,5 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
-import { HomePage } from "@/pages/HomePage";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { CreateRoomPage } from "@/pages/CreateRoomPage";
 import { RoomPage } from "@/pages/RoomPage";
 import { RoomsPage } from "@/pages/RoomsPage";
@@ -33,7 +32,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <Navigate to={routesConfig.app.rooms} replace />,
       },
       {
         path: routesConfig.app.rooms,

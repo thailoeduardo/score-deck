@@ -1,23 +1,33 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, Play, Share2, UserCheck } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, Gamepad2, Loader2, Play, Share2, UserCheck } from "lucide-react";
 import { toast } from "sonner";
-import { createRoom, getErrorMessage } from "@/lib/api";
+import { createRoom, getErrorMessage, listRoomCategories } from "@/lib/api";
+import type { RoomCategoryId } from "@/types/domino";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 
 export function CreateRoomPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const categoryId = searchParams.get("category") as RoomCategoryId | null;
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["room-categories"],
+    queryFn: listRoomCategories,
+  });
+  const selectedCategory = categories.find((category) => category.id === categoryId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting || !selectedCategory) return;
 
     try {
       setIsSubmitting(true);
       const room = await createRoom({
         name: `Partida ${new Date().toLocaleDateString("pt-BR")}`,
+        category: selectedCategory.id,
         playerNames: [],
       });
       toast.success("Sala criada! Você já está na partida.");
@@ -42,7 +52,7 @@ export function CreateRoomPage() {
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/rooms")}
+            onClick={() => navigate(selectedCategory ? `/rooms?category=${selectedCategory.id}` : "/rooms")}
             className="gap-1.5 rounded-xl font-semibold text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -57,10 +67,26 @@ export function CreateRoomPage() {
 
       {/* Main Content */}
       <main className="relative mx-auto max-w-2xl px-4 pt-24 pb-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {!selectedCategory ? (
+          <section className="space-y-6">
+            <div className="space-y-1">
+              <h1 className="text-2xl font-display font-extrabold uppercase text-foreground">Escolha o <span className="brand-text-gradient">jogo</span></h1>
+              <p className="text-xs text-muted-foreground">Você precisa escolher uma categoria antes de criar a sala.</p>
+            </div>
+            {isLoadingCategories ? <Loader2 className="mx-auto h-7 w-7 animate-spin text-primary" /> : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {categories.map((category) => (
+                  <Button key={category.id} type="button" variant="secondary" className="h-auto justify-start rounded-2xl p-5 text-left" onClick={() => navigate(`/rooms/new?category=${category.id}`)}>
+                    <Gamepad2 className="mr-3 h-5 w-5 text-primary" />{category.name}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </section>
+        ) : <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-1">
             <h1 className="text-2xl font-display font-extrabold uppercase text-foreground">
-              Iniciar <span className="brand-text-gradient">Partida</span>
+              {selectedCategory.name}: <span className="brand-text-gradient">nova partida</span>
             </h1>
             <p className="text-xs text-muted-foreground">
               Você entra automaticamente como jogador. Depois é só compartilhar o link da sala com seus amigos.
@@ -89,7 +115,7 @@ export function CreateRoomPage() {
             {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Play className="mr-2 h-5 w-5" />}
             Iniciar Partida
           </Button>
-        </form>
+        </form>}
       </main>
     </div>
   );

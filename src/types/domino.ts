@@ -21,11 +21,18 @@ export interface Round {
 }
 
 export type RoomStatus = "in_progress" | "finished";
+export type RoomCategoryId = string;
+
+export interface RoomCategory {
+  id: RoomCategoryId;
+  name: string;
+}
 
 export interface Room {
   id: string;
   name: string;
   ownerId?: string;
+  categoryId: RoomCategoryId;
   players: Player[];
   rounds: Round[];
   status: RoomStatus;
@@ -36,6 +43,7 @@ export interface Room {
 
 export interface CreateRoomInput {
   name: string;
+  category: RoomCategoryId;
   playerNames: string[];
 }
 
